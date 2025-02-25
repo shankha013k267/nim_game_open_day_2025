@@ -1,0 +1,11 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore dependencies (if using Node.js)
+node_modules/
+package-lock.json
+
+# Ignore Git & deployment files
+dist/
+.env
