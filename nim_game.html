@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nim Game</title>
+    <link rel="stylesheet" href="nim_styles.css">
+    <script>
+        window.onload = function() {
+            alert("Rules:\nThere will be some piles, with some number of apples, choose one pile and remove whatever number of apples you want. You must remove at least one apple in your move. The player who can't move loses.");
+        };
+
+        function showModal(modalId, level = null) {
+            if (level) {
+                localStorage.setItem('selectedLevel', level);
+            }
+            document.getElementById(modalId).style.display = "flex";
+        }
+
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+
+        function handleCustomSelection() {
+            hideModal('playAsModal');
+            showModal('customModal');
+        }
+
+        function handleCustomPlay() {
+            const pile1 = document.getElementById('pile1').value.trim();
+            const pile2 = document.getElementById('pile2').value.trim();
+            const pile3 = document.getElementById('pile3').value.trim();
+
+            // Regular expression to check for non-negative integers
+            const isValidInteger = (val) => /^\d+$/.test(val);
+
+            if (!pile1 || !pile2 || !pile3) {
+                alert("Please enter the number of apples for all the piles.");
+                return;
+            }
+
+            if (!isValidInteger(pile1) || !isValidInteger(pile2) || !isValidInteger(pile3)) {
+                alert("Please enter a valid number of apples for all the piles.");
+                return;
+            }
+
+            // Convert inputs to numbers
+            const num1 = Number(pile1);
+            const num2 = Number(pile2);
+            const num3 = Number(pile3);
+
+            if (num1 > 25 || num2 > 25 || num3 > 25) {
+                alert("You can have at max 25 apples in each pile.");
+                return;
+            }
+
+            if (num1 === 0 && num2 === 0 && num3 === 0) {
+                alert("You can't start with all piles empty.");
+                return;
+            }
+
+            // Store values and proceed to the game
+            localStorage.setItem('pile1', num1);
+            localStorage.setItem('pile2', num2);
+            localStorage.setItem('pile3', num3);
+            window.location.href = 'nim_play.html';
+        }
+
+        function handleLevelSelection(player) {
+            localStorage.setItem('playerTurn', player); 
+            const level = localStorage.getItem('selectedLevel');
+            const piles = {
+                'level1': player === 'first' ? [2, 3, 2] : [1, 3, 2],
+                'level2': player === 'first' ? [3, 4, 5] : [3, 4, 7],
+                'level3': player === 'first' ? [11, 4, 15] : [9, 12, 15]
+            };
+            
+            if (level && piles[level]) {
+                localStorage.setItem('pile1', piles[level][0]);
+                localStorage.setItem('pile2', piles[level][1]);
+                localStorage.setItem('pile3', piles[level][2]);
+                window.location.href = 'nim_play.html';
+            } else {
+                alert("Error: Level not selected properly.");
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom, #f5e1c0, #eecda3);
+            font-family: 'Poppins', sans-serif;
+        }
+        .container {
+            text-align: center;
+            background: #f0e6d2;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            margin-bottom: 30px;
+            color: black;
+            font-size: 36px;
+            font-weight: bold;
+        }
+        .game-button {
+            display: block;
+            width: 80%;
+            margin: 10px auto;
+            padding: 14px 28px;
+            font-size: 22px;
+            font-weight: bold;
+            background: #2e8b57;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .game-button:hover {
+            background: #246b44;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #f0e6d2;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .modal h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .modal .game-button {
+            width: 100%;
+        }
+        .modal input {
+            width: 80%;
+            padding: 12px;
+            margin: 8px 0 15px 0;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            background: #fff8e1;
+            text-align: center;
+        }
+        .modal label {
+            font-size: 20px;
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Level</h1>
+        <button class="game-button" onclick="showModal('playAsModal', 'level1')">Level 1 (Easy)</button>
+        <button class="game-button" onclick="showModal('playAsModal', 'level2')">Level 2 (Moderate)</button>
+        <button class="game-button" onclick="showModal('playAsModal', 'level3')">Level 3 (Insane)</button>        
+        <button class="game-button" onclick="handleCustomSelection()">Custom</button>
+        <button class="game-button" onclick="window.location.href='home.html'">Go Back</button>
+    </div>
+    
+    <div class="modal" id="playAsModal">
+        <div class="modal-content">
+            <h2>Play as?</h2>
+            <button class="game-button" onclick="handleLevelSelection('first')">First Player</button>
+            <button class="game-button" onclick="handleLevelSelection('second')">Second Player</button>
+            <button class="game-button" onclick="hideModal('playAsModal')">Go Back</button>
+        </div>
+    </div>
+    
+    <div class="modal" id="customModal">
+        <div class="modal-content">
+            <h2>Select number of apples in each pile</h2>
+            <label for="pile1">Pile 1</label>
+            <input type="number" id="pile1" min="1" placeholder="Enter number of apples" oninput="limitInputLength(this)">
+            <label for="pile2">Pile 2</label>
+            <input type="number" id="pile2" min="1" placeholder="Enter number of apples" oninput="limitInputLength(this)">
+            <label for="pile3">Pile 3</label>
+            <input type="number" id="pile3" min="1" placeholder="Enter number of apples" oninput="limitInputLength(this)">
+            <button class="game-button" onclick="handleCustomPlay()">Play</button>
+            <button class="game-button" onclick="hideModal('customModal')">Go Back</button>
+        </div>
+    </div>
+    <script>
+        function limitInputLength(input) {
+            if (input.value.length > 5) {
+                input.value = input.value.slice(0, 5);
+            }
+        }
+    </script>
+</body>
+</html>

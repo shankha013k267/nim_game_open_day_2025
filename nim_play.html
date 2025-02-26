@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nim Game</title>
+    <link rel="stylesheet" href="nim_play.css">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom, #f5e1c0, #eecda3);
+            font-family: 'Poppins', sans-serif;
+        }
+        .container {
+            text-align: center;
+            background: #f0e6d2;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            width: 70%;
+            max-width: 800px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            margin-bottom: 50px;
+            color: black;
+            font-size: 36px;
+            font-weight: bold;
+        }
+        .card-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: #fff8e1;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 200px;
+        }
+        .card h2 {
+            margin-bottom: 15px;
+            font-size: 24px;
+            color: #2e8b57;
+        }
+        .card p {
+            font-size: 48px;
+            margin: 0;
+            color: #246b44;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .game-button {
+            padding: 14px 28px;
+            font-size: 22px;
+            font-weight: bold;
+            background: #2e8b57;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        .game-button:hover {
+            background: #246b44;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #f0e6d2;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .modal h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .modal .game-button {
+            width: 100%;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1 id="game-heading">Nim Game</h1>
+        <div class="card-container">
+            <div class="card" onclick="selectPile(1)">
+                <h2>Pile 1</h2>
+                <p id="pile1-count" class="pile"></p>
+            </div>
+            <div class="card" onclick="selectPile(2)">
+                <h2>Pile 2</h2>
+                <p id="pile2-count" class="pile"></p>
+            </div>
+            <div class="card" onclick="selectPile(3)">
+                <h2>Pile 3</h2>
+                <p id="pile3-count" class="pile"></p>
+            </div>            
+        </div>
+        <div class="button-container">
+            <button id="replay-move-btn" class="game-button" onclick="replayLastMove()" disabled>Replay Last Move</button>
+            <button class="game-button" onclick="showModal('confirmModal')">Go Back</button>
+        </div>
+        <div id="selection-buttons" style="display: none; position: fixed; bottom: 20%; left: 50%; transform: translateX(-50%); text-align: center;">
+            <button class="game-button" onclick="playPlayerMove()">Play Your Move</button>
+            <button class="game-button" onclick="cancelSelection()">Go Back</button>
+        </div>        
+    </div>
+
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <h2>Are you sure? Your progress will be lost.</h2>
+            <button class="game-button" onclick="goBack()">Ok</button>
+            <button class="game-button" onclick="hideModal('confirmModal')">Cancel</button>
+        </div>
+    </div>
+    <script src="nim_play.js"></script>
+</body>
+</html>

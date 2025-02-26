@@ -1,0 +1,36 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to bottom, #f5e1c0, #eecda3);
+    font-family: 'Poppins', sans-serif;
+}
+.container {
+    text-align: center;
+    background: #f0e6d2;
+    padding: 50px;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+h1 {
+    margin-bottom: 30px;
+    color: black; /*think*/
+    font-size: 36px;
+    font-weight: bold;
+}
+.game-button {
+    padding: 14px 28px;
+    background: #2e8b57;
+    color: white;
+    font-size: 25px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.game-button:hover {
+    background: #246b44;
+}
