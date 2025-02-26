@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="nim_styles.css">
     <script>
         window.onload = function() {
+            localStorage.clear();
             alert("Rules:\nThere will be some piles, with some number of apples, choose one pile and remove whatever number of apples you want. You must remove at least one apple in your move. The player who can't move loses.");
         };
 
@@ -24,6 +25,7 @@
 
         function handleCustomSelection() {
             localStorage.setItem('gameMode', 'custom'); // Store that Custom was selected
+            localStorage.setItem('selectedLevel', 'custom'); // Explicitly store "custom" as the level
             showModal('playAsModal'); // Now show player selection
         }
 
@@ -71,30 +73,39 @@
         function handleLevelSelection(player) {
             localStorage.setItem('playerTurn', player); // Store player turn
 
-            const gameMode = localStorage.getItem('gameMode'); // Get selected mode
-            if (gameMode === 'custom') {
+            const level = localStorage.getItem('selectedLevel');
+            
+            if (!level) {
+                alert("Error: Level not selected properly.");
+                return;
+            }
+
+            if (level === "custom") {
+                localStorage.setItem('gameMode', 'custom'); // Ensure gameMode is custom for custom selection
                 hideModal('playAsModal');
                 showModal('customModal'); // If Custom mode, show custom setup
                 return;
             }
 
-            // Otherwise, proceed with level selection
-            const level = localStorage.getItem('selectedLevel');
+            // Set gameMode to "preset" for standard levels
+            localStorage.setItem('gameMode', 'preset');
+
             const piles = {
                 'level1': player === 'first' ? [2, 3, 2] : [1, 3, 2],
                 'level2': player === 'first' ? [3, 4, 5] : [3, 4, 7],
                 'level3': player === 'first' ? [11, 4, 15] : [9, 12, 15]
             };
-            
-            if (level && piles[level]) {
+
+            if (piles[level]) {
                 localStorage.setItem('pile1', piles[level][0]);
                 localStorage.setItem('pile2', piles[level][1]);
                 localStorage.setItem('pile3', piles[level][2]);
                 window.location.href = 'nim_play.html';
             } else {
-                alert("Error: Level not selected properly.");
+                alert("Error: Level not found.");
             }
         }
+
 
     </script>
     <style>
@@ -187,7 +198,7 @@
         <button class="game-button" onclick="showModal('playAsModal', 'level2')">Level 2 (Moderate)</button>
         <button class="game-button" onclick="showModal('playAsModal', 'level3')">Level 3 (Insane)</button>        
         <button class="game-button" onclick="handleCustomSelection()">Custom</button>
-        <button class="game-button" onclick="window.location.href='home.html'">Go Back</button>
+        <button class="game-button" onclick="localStorage.clear(); window.location.href='home.html';">Go Back</button>
     </div>
     
     <div class="modal" id="playAsModal">
@@ -195,7 +206,7 @@
             <h2>Play as?</h2>
             <button class="game-button" onclick="handleLevelSelection('first')">First Player</button>
             <button class="game-button" onclick="handleLevelSelection('second')">Second Player</button>
-            <button class="game-button" onclick="hideModal('playAsModal')">Go Back</button>
+            <button class="game-button" onclick="localStorage.clear(); hideModal('playAsModal')">Go Back</button>
         </div>
     </div>    
     
@@ -209,7 +220,7 @@
             <label for="pile3">Pile 3</label>
             <input type="number" id="pile3" min="1" placeholder="Enter number of apples" oninput="limitInputLength(this)">
             <button class="game-button" onclick="handleCustomPlay()">Play</button>
-            <button class="game-button" onclick="hideModal('customModal')">Go Back</button>
+            <button class="game-button" onclick="localStorage.clear(); hideModal('customModal')">Go Back</button>
         </div>
     </div>
     <script>

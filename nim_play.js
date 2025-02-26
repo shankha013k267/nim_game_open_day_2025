@@ -1,3 +1,4 @@
+let isPlayerMode = false; // Track if player mode is on
 let piles = [
     parseInt(localStorage.getItem('pile1')) || 0,
     parseInt(localStorage.getItem('pile2')) || 0,
@@ -10,6 +11,7 @@ let selectedApples = 0;
 
 window.onload = function () {
     playerModeOff();
+    updateReplayButton();
     showApples(piles);
     if (user === 'first') {
         setTimeout(() => {
@@ -47,15 +49,23 @@ function toggleAppleSelection(pileIndex, apple) {
 
 
 function playerModeOn() {
+    isPlayerMode = true;
     document.querySelectorAll(".card").forEach((card, index) => {
         card.onclick = () => selectPile(index);
         card.style.transition = "transform 0.3s ease";
-        card.onmouseover = () => card.style.transform = "scale(1.05)";
-        card.onmouseleave = () => card.style.transform = "scale(1)";
+        card.onmouseover = () => {
+            card.style.transform = "scale(1.05)";
+            card.style.cursor = "pointer";
+        };
+        card.onmouseleave = () => {
+            card.style.transform = "scale(1)";
+            card.style.cursor = "default";
+        };
     });
 }
 
 function playerModeOff() {
+    isPlayerMode = false;
     document.querySelectorAll(".card").forEach(card => {
         card.onclick = null;
         card.onmouseover = null;  // Disable hover effect
@@ -72,22 +82,37 @@ function selectPile(index) {
     selectedPile = index;
 
     let overlay = document.getElementById("globalOverlay");
-    overlay.style.display = "block";  // Ensure it's visible
-    
+    overlay.style.display = "block";  
 
-    // Highlight selected pile
     let selectedCard = document.querySelectorAll(".card")[index];
     selectedCard.classList.add("highlighted-card");
 
-    // Dim and disable other cards
+    // Dim other cards
     document.querySelectorAll(".card").forEach((card, i) => {
         if (i !== index) {
             card.classList.add("disabled-card");
         }
     });
 
-    // Ensure buttons are visible
-    document.getElementById("selection-buttons").style.display = "block";
+    // Dynamically position the buttons under the selected card
+   // let rect = selectedCard.getBoundingClientRect();
+   // let buttons = document.getElementById("selection-buttons");
+
+   // buttons.style.position = "absolute";  // Make it absolute for correct placement
+  //  buttons.style.top = `${window.scrollY + rect.bottom + 30}px`; // Place 10px below selected card
+   // buttons.style.left = `${rect.left + rect.width / 2}px`; // Center it under the card
+   // buttons.style.transform = "translateX(-50%)"; // Center alignment
+   // buttons.style.display = "block"; // Show buttons
+   // Dynamically position the buttons under the selected card
+   let cardTop = selectedCard.offsetTop; // Get fixed top position
+   let cardHeight = selectedCard.offsetHeight; // Fixed height
+   let buttons = document.getElementById("selection-buttons");
+
+   buttons.style.position = "absolute";  
+   buttons.style.top = `${cardTop + cardHeight + 30}px`;  // 20px spacing below the card
+   buttons.style.left = `50%`; 
+   buttons.style.transform = "translateX(-50%)";
+   buttons.style.display = "block";
 }
 
 
@@ -122,6 +147,7 @@ function playPlayerMove() {
 
     // Disable player mode and trigger computer move
     playerModeOff();
+    updateReplayButton(); 
     computerMove();
 }
 
@@ -183,18 +209,10 @@ function computerMove() {
             return;
         }
         playerModeOn();
+        updateReplayButton(); 
     }, 2000);
 }
 
-function replayLastMove() {
-    if (history.length > 1) {
-        history.pop();
-        piles = history[history.length - 1].slice();
-        showApples(piles);
-        document.getElementById("game-heading").innerText = "Play your move!";
-        playerModeOn();
-    }
-}
 
 function showGameOverScreen(message, color) {
     let modal = document.createElement("div");
@@ -218,4 +236,30 @@ function showModal(modalId) {
 
 function hideModal(modalId) {
     document.getElementById(modalId).style.display = "none";
+}
+
+function replayLastMove() {
+    if (!isPlayerMode || history.length <= 2) {
+        document.getElementById("replay-move-btn").disabled = true;
+        return;
+    }
+
+    // Remove the last two elements from history
+    history.pop();
+    history.pop();
+
+    // Update piles array
+    piles = history[history.length - 1].slice();
+
+    // Show updated apple piles
+    showApples(piles);
+
+    // Ensure player can play again
+    document.getElementById("game-heading").innerText = "Play your move!";
+    playerModeOn();
+    updateReplayButton();
+}
+
+function updateReplayButton() {
+    document.getElementById("replay-move-btn").disabled = (!isPlayerMode || history.length <= 2);
 }

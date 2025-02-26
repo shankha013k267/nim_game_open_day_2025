@@ -42,7 +42,7 @@ span.opaque {
 /* Ensure buttons remain interactive and visible */
 #selection-buttons {
     z-index: 100; /* Bring above dark overlay */
-    position: relative;
+    position: absolute;
     pointer-events: auto;
     opacity: 1 !important;
 }
