@@ -23,9 +23,10 @@
         }
 
         function handleCustomSelection() {
-            hideModal('playAsModal');
-            showModal('customModal');
+            localStorage.setItem('gameMode', 'custom'); // Store that Custom was selected
+            showModal('playAsModal'); // Now show player selection
         }
+
 
         function handleCustomPlay() {
             const pile1 = document.getElementById('pile1').value.trim();
@@ -68,7 +69,16 @@
         }
 
         function handleLevelSelection(player) {
-            localStorage.setItem('playerTurn', player); 
+            localStorage.setItem('playerTurn', player); // Store player turn
+
+            const gameMode = localStorage.getItem('gameMode'); // Get selected mode
+            if (gameMode === 'custom') {
+                hideModal('playAsModal');
+                showModal('customModal'); // If Custom mode, show custom setup
+                return;
+            }
+
+            // Otherwise, proceed with level selection
             const level = localStorage.getItem('selectedLevel');
             const piles = {
                 'level1': player === 'first' ? [2, 3, 2] : [1, 3, 2],
@@ -85,6 +95,7 @@
                 alert("Error: Level not selected properly.");
             }
         }
+
     </script>
     <style>
         body {
@@ -186,7 +197,7 @@
             <button class="game-button" onclick="handleLevelSelection('second')">Second Player</button>
             <button class="game-button" onclick="hideModal('playAsModal')">Go Back</button>
         </div>
-    </div>
+    </div>    
     
     <div class="modal" id="customModal">
         <div class="modal-content">

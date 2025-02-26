@@ -1,0 +1,48 @@
+
+
+span.opaque {
+    opacity: 0.3 !important;
+    filter: brightness(80%);
+}
+
+.dark-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Slightly reduced darkness */
+    backdrop-filter: blur(8px); /* Increased blur effect */
+    z-index: 50;
+    display: none; /* Initially hidden */
+    pointer-events: none;
+}
+
+
+/* Keep selected card highlighted */
+/* Remove hover effect from the selected card */
+.highlighted-card {
+    transform: scale(1.2) !important;
+    z-index: 100;
+    pointer-events: auto;
+    opacity: 1 !important;
+}
+
+/* Ensure hover doesn't affect selected card */
+.card.highlighted-card:hover {
+    transform: scale(1.2) !important;
+}
+
+
+.card.disabled-card {
+    opacity: 0.2;
+    pointer-events: none;
+}
+
+/* Ensure buttons remain interactive and visible */
+#selection-buttons {
+    z-index: 100; /* Bring above dark overlay */
+    position: relative;
+    pointer-events: auto;
+    opacity: 1 !important;
+}
