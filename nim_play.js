@@ -43,7 +43,7 @@ function toggleAppleSelection(pileIndex, apple) {
 
     apple.classList.toggle("opaque");
 
-    // Recalculate selected apples properly
+    // Count selected apples correctly
     selectedApples = document.querySelectorAll("#pile" + (pileIndex + 1) + "-count .opaque").length;
 }
 
@@ -117,7 +117,12 @@ function selectPile(index) {
 
 
 function playPlayerMove() {
-    if (selectedApples === 0) {
+    if (selectedPile === -1) {
+        alert("Please select a pile first.");
+        return;
+    }
+
+    if (selectedApples === 0) {  // Fix: Ensure apples are selected
         alert("Please select at least one apple to remove");
         return;
     }
@@ -144,6 +149,10 @@ function playPlayerMove() {
     document.querySelectorAll(".opaque").forEach(apple => {
         apple.classList.remove("opaque");
     });
+
+    // Reset selection values
+    selectedPile = -1;
+    selectedApples = 0;
 
     // Disable player mode and trigger computer move
     playerModeOff();
